@@ -66,13 +66,15 @@ void BigInt::operator=(BigInt operand) {
 
 BigInt BigInt::operator+(BigInt b) {
 	BigInt sum;
-	if (getSign() == b.getSign()) {
+	if (getSign() == b.getSign()) // both +ve or -ve
+	{
 		sum.setNumber(add(getNumber(), b.getNumber()));
 		sum.setSign(getSign());
 	}
-	else
+	else // sign different
 	{
-		if (absolute() > b.absolute()) {
+		if (absolute() > b.absolute())
+		{
 			sum.setNumber(subtract(getNumber(), b.getNumber()));
 			sum.setSign(getSign());
 		}
@@ -82,7 +84,7 @@ BigInt BigInt::operator+(BigInt b) {
 			sum.setSign(b.getSign());
 		}
 	}
-	if (sum.getNumber() == "0") 
+	if (sum.getNumber() == "0") // avoid (-0) problem
 		sum.setSign(false);
 
 	return sum;
@@ -138,19 +140,43 @@ bool BigInt::operator < (BigInt b)
 {
 	return less((*this), b);
 }
-//-------------------------------------------------------------
+
 bool BigInt::operator >= (BigInt b)
 {
 	return equals((*this), b)
 		|| greater((*this), b);
 }
-//-------------------------------------------------------------
+
 bool BigInt::operator <= (BigInt b)
 {
 	return equals((*this), b)
 		|| less((*this), b);
 }
+std::ostream& operator<<(std::ostream& out, BigInt const& a)
+{
+	if (!a.num.size()) return out << 0;
 
+	if (a.sign)
+		out << "-";
+	out << a.num;
+	return out;
+}
+
+std::istream& operator>>(std::istream& in, BigInt& a)
+{
+	std::string str;
+	in >> str;
+
+	a = str;
+
+	return in;
+}
+BigInt::operator string() // for conversion from BigInteger to string
+{
+	string temp = (getSign()) ? "-" : "";
+	temp += num;
+	return temp;
+}
 bool BigInt::equals(BigInt num1, BigInt num2)
 {
 	return num1.getNumber() == num2.getNumber()
@@ -202,8 +228,7 @@ string BigInt::add(string num1, string num2) {
 
 	for (int i = num1.size() - 1; i >= 0; i--)
 	{
-		sum[i] = ((carry - '0') + (num
-			[i] - '0') + (num2[i] - '0')) + '0';
+		sum[i] = ((carry - '0') + (num1[i] - '0') + (num2[i] - '0')) + '0';
 
 		if (i != 0) {
 			if (sum[i] > '9')
@@ -262,7 +287,6 @@ string BigInt::multiply(string num1, string num2)
 		string temp = num2;
 		int currentDigit = num1[i] - '0';
 		int carry = 0;
-
 		for (int j = temp.length() - 1; j >= 0; --j)
 		{
 			temp[j] = ((temp[j] - '0') * currentDigit) + carry;
@@ -275,7 +299,7 @@ string BigInt::multiply(string num1, string num2)
 			else
 				carry = 0;
 
-			temp[j] += '0'; 
+			temp[j] += '0';
 		}
 
 		if (carry > 0)

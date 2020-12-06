@@ -12,7 +12,6 @@ public:
     BigInt(string str, bool sign);
     BigInt(int integer);
     BigInt(const BigInt& b);
-    ~BigInt();
 
     void setNumber(string str);
     const string& getNumber();
@@ -29,7 +28,10 @@ public:
     bool operator < (BigInt b);
     bool operator >= (BigInt b);
     bool operator <= (BigInt b);
+    friend std::istream& operator>>(std::istream&, BigInt&);
+    friend std::ostream& operator<<(std::ostream&, BigInt const&);
     BigInt absolute();
+    operator string();
 private:
     bool equals(BigInt num1, BigInt num2);
     bool less(BigInt num1, BigInt num2);
