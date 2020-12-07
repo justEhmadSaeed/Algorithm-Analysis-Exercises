@@ -2,7 +2,7 @@
 #include <string>
 #include <cmath>	
 #include "BigInteger.h"
-
+using namespace std;
 BigInt::BigInt() {
 	num = "0";
 	sign = false;
@@ -152,7 +152,7 @@ bool BigInt::operator <= (BigInt b)
 	return equals((*this), b)
 		|| less((*this), b);
 }
-std::ostream& operator<<(std::ostream& out, BigInt const& a)
+ostream& operator<<(ostream& out, BigInt const& a)
 {
 	if (!a.num.size()) return out << 0;
 
@@ -162,9 +162,9 @@ std::ostream& operator<<(std::ostream& out, BigInt const& a)
 	return out;
 }
 
-std::istream& operator>>(std::istream& in, BigInt& a)
+istream& operator>>(istream& in, BigInt& a)
 {
-	std::string str;
+	string str;
 	in >> str;
 
 	a = str;
@@ -320,8 +320,11 @@ string BigInt::multiply(string num1, string num2)
 pair<string, long long> BigInt::divide(string str, long long den)
 {
 	long long rem = 0;
-	string result; result.resize(10000);
-
+	string result; 
+	if (den == 0) {
+		cout << "ERROR: Divider is zero."<<endl;
+	}
+	result.resize(10000);
 	for (int indx = 0, len = str.length(); indx < len; ++indx)
 	{
 		rem = (rem * 10) + (str[indx] - '0');
